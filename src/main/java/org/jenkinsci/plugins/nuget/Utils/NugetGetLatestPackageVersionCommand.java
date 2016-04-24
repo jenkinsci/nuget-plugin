@@ -17,13 +17,15 @@ class NugetGetLatestPackageVersionCommand extends NugetCommandBase {
 
     private ForkingOutputStream fork;
     private final String packageName;
+    private final boolean checkPrerelease;
     private final XTriggerLog log;
     private String version;
 
-    NugetGetLatestPackageVersionCommand(XTriggerLog log, NugetGlobalConfiguration configuration, FilePath workDir, String packageName) {
+    NugetGetLatestPackageVersionCommand(XTriggerLog log, NugetGlobalConfiguration configuration, FilePath workDir, String packageName, boolean checkPrerelease) {
         super(log.getListener(), configuration, workDir);
         this.log = log;
         this.packageName = packageName;
+        this.checkPrerelease = checkPrerelease;
         this.retryCount = 3;
     }
 
@@ -31,6 +33,9 @@ class NugetGetLatestPackageVersionCommand extends NugetCommandBase {
     protected void enrichArguments(ArgumentListBuilder builder) {
         builder.add("list");
         builder.add(packageName);
+        if (checkPrerelease) {
+            builder.add(PRE_RELEASE);
+        }
         builder.add(NON_INTERACTIVE);
     }
 

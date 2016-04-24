@@ -11,14 +11,14 @@ import org.jenkinsci.plugins.nuget.NugetGlobalConfiguration;
  * @author bgregg
  */
 public class NugetUpdater {
-    private FilePath solutionDir;
-    private NugetPackagesCheckerCallable nugetPackagesCheckerCallable;
-    private XTriggerLog log;
+    private final FilePath solutionDir;
+    private final NugetPackagesCheckerCallable nugetPackagesCheckerCallable;
+    private final XTriggerLog log;
 
-    public NugetUpdater(FilePath solutionDir, NugetGlobalConfiguration configuration, XTriggerLog log) {
+    public NugetUpdater(FilePath solutionDir, NugetGlobalConfiguration configuration, boolean checkPrerelease, XTriggerLog log) {
         this.solutionDir = solutionDir;
         this.log = log;
-        this.nugetPackagesCheckerCallable = new NugetPackagesCheckerCallable(configuration, log);
+        this.nugetPackagesCheckerCallable = new NugetPackagesCheckerCallable(configuration, checkPrerelease, log);
     }
 
     public boolean performUpdate() {

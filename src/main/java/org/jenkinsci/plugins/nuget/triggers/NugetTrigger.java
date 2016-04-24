@@ -1,6 +1,5 @@
 package org.jenkinsci.plugins.nuget.triggers;
 import antlr.ANTLRException;
-import hudson.FilePath;
 import hudson.XmlFile;
 import hudson.model.Items;
 import jenkins.model.GlobalConfiguration;
@@ -28,11 +27,19 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * @author bgregg
  */
 public class NugetTrigger extends AbstractTrigger {
+
+    private boolean checkPrerelease;
+
     @DataBoundConstructor
-    public NugetTrigger(String cronTabSpec) throws ANTLRException {
+    public NugetTrigger(String cronTabSpec, boolean checkPrerelease) throws ANTLRException {
         super(cronTabSpec);
+        this.checkPrerelease = checkPrerelease;
     }
-    
+
+    public boolean getCheckPrerelease() {
+        return checkPrerelease;
+    }
+
     @Override
     protected File getLogFile() {
         return new File(job.getRootDir(), "nuget-polling.log");
@@ -60,7 +67,8 @@ public class NugetTrigger extends AbstractTrigger {
         }
         AbstractProject project = (AbstractProject) job;
         NugetGlobalConfiguration configuration = GlobalConfiguration.all().get(NugetGlobalConfiguration.class);
-        NugetUpdater updater = new NugetUpdater(project.getSomeWorkspace(), configuration, xtl);
+        NugetTriggerDescriptor descriptor = getDescriptor();
+        NugetUpdater updater = new NugetUpdater(project.getSomeWorkspace(), configuration, checkPrerelease, xtl);
         return updater.performUpdate();
     }
 
@@ -68,7 +76,7 @@ public class NugetTrigger extends AbstractTrigger {
     protected String getCause() {
         return Messages.NugetCause_Cause();
     }
-    
+
     @Override
     public NugetTriggerDescriptor getDescriptor() {
         return (NugetTriggerDescriptor)super.getDescriptor();
@@ -81,7 +89,7 @@ public class NugetTrigger extends AbstractTrigger {
         }
         return Collections.singleton(new NugetTriggerAction(job, getLogFile()));
     }
-    
+
     @Extension(ordinal=1000)
     public static final class NugetTriggerDescriptor extends XTriggerDescriptor {
         private String nugetExe;
@@ -90,7 +98,7 @@ public class NugetTrigger extends AbstractTrigger {
             super();
             load();
         }
-        
+
         @Override
         public String getDisplayName() {
             return Messages.NugetTrigger_DiplayName();

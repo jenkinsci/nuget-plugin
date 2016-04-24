@@ -14,6 +14,7 @@ import java.io.IOException;
 abstract class NugetCommandBase {
 
     static final String NON_INTERACTIVE = "-NonInteractive";
+    static final String PRE_RELEASE = "-Prerelease";
 
     int retryCount = 1;
     protected TaskListener listener;

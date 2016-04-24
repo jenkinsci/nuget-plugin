@@ -27,6 +27,7 @@ class NugetPackageCheckerVisitor extends SimpleFileVisitor<Path> {
 
     private final Map<String, String> latestPackageVersions = Maps.newHashMap();
     private final XTriggerLog log;
+    private final boolean preReleaseChecked;
     private final FilePath workspaceRoot;
     private final DocumentBuilder builder;
     private final NugetGlobalConfiguration configuration;
@@ -36,9 +37,10 @@ class NugetPackageCheckerVisitor extends SimpleFileVisitor<Path> {
         return updated;
     }
 
-    NugetPackageCheckerVisitor(XTriggerLog log, NugetGlobalConfiguration configuration, FilePath workspaceRoot) throws ParserConfigurationException {
+    NugetPackageCheckerVisitor(XTriggerLog log, NugetGlobalConfiguration configuration, boolean preReleaseChecked, FilePath workspaceRoot) throws ParserConfigurationException {
         this.log = log;
         this.configuration = configuration;
+        this.preReleaseChecked = preReleaseChecked;
         this.workspaceRoot = workspaceRoot;
         builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
     }
@@ -90,7 +92,7 @@ class NugetPackageCheckerVisitor extends SimpleFileVisitor<Path> {
         if (latestPackageVersions.containsKey(packageName)) {
             return latestPackageVersions.get(packageName);
         }
-        NugetGetLatestPackageVersionCommand command = new NugetGetLatestPackageVersionCommand(log, configuration, workspaceRoot, packageName);
+        NugetGetLatestPackageVersionCommand command = new NugetGetLatestPackageVersionCommand(log, configuration, workspaceRoot, packageName, preReleaseChecked);
         command.execute();
         return command.getVersion();
     }
