@@ -67,7 +67,6 @@ public class NugetTrigger extends AbstractTrigger {
         }
         AbstractProject project = (AbstractProject) job;
         NugetGlobalConfiguration configuration = GlobalConfiguration.all().get(NugetGlobalConfiguration.class);
-        NugetTriggerDescriptor descriptor = getDescriptor();
         NugetUpdater updater = new NugetUpdater(project.getSomeWorkspace(), configuration, checkPrerelease, xtl);
         return updater.performUpdate();
     }
