@@ -23,4 +23,7 @@
   <f:entry title="${%FileExclusionPattern}" description="${%FileExclusionPatternDescription}" field="packagesExclusionPattern">
     <f:textbox value="${instance.packagesExclusionPattern}"/>
   </f:entry>
+  <f:entry title="${%publishPath}" description="${%publishPathDescription}" field="publishPath">
+    <f:textbox value="${instance.publishPath}"/>
+  </f:entry>
 </j:jelly>
