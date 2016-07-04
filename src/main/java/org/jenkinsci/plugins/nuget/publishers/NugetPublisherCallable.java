@@ -23,13 +23,15 @@ import java.util.List;
  */
 class NugetPublisherCallable extends MasterToSlaveFileCallable<List<PublicationResult>> {
     private final String packagesPattern;
+    private final String publishPath;
     private final String packagesExclusionPattern;
     private final BuildListener listener;
     private final NugetGlobalConfiguration configuration;
     private final NugetPublication publication;
 
-    NugetPublisherCallable(String packagesPattern, String packagesExclusionPattern, BuildListener listener, NugetGlobalConfiguration configuration, NugetPublication publication) {
+    NugetPublisherCallable(String packagesPattern, String packagesExclusionPattern, BuildListener listener, NugetGlobalConfiguration configuration, String publishPath, NugetPublication publication) {
         this.packagesPattern = packagesPattern;
+        this.publishPath = publishPath;
         this.packagesExclusionPattern = packagesExclusionPattern;
         this.listener = listener;
         this.configuration = configuration;
@@ -47,6 +49,7 @@ class NugetPublisherCallable extends MasterToSlaveFileCallable<List<PublicationR
                     configuration,
                     new FilePath(file),
                     new FilePath(packageFile),
+                    publishPath,
                     publication);
             boolean success = publishCommand.execute();
             results.add(new PublicationResult(packageFile.getName(), success));
