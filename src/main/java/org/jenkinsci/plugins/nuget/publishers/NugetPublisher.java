@@ -17,7 +17,6 @@ import org.jenkinsci.plugins.nuget.NugetPublication;
 import org.jenkinsci.plugins.nuget.Utils.Validations;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
-import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,15 +31,13 @@ public class NugetPublisher extends Recorder {
 
     private String name;
     private String packagesPattern;
-    private String publishPath;
     private String nugetPublicationName;
     private String packagesExclusionPattern;
 
     @DataBoundConstructor
-    public NugetPublisher(String name, String packagesPattern, String publishPath, String nugetPublicationName, String packagesExclusionPattern) {
+    public NugetPublisher(String name, String packagesPattern, String nugetPublicationName, String packagesExclusionPattern) {
         this.name = name;
         this.packagesPattern = packagesPattern;
-        this.publishPath = StringUtils.trim(publishPath);
         this.nugetPublicationName = nugetPublicationName;
         this.packagesExclusionPattern = packagesExclusionPattern;
     }
@@ -52,23 +49,19 @@ public class NugetPublisher extends Recorder {
 
     @Override
      public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
-       
-        //expand parameters 
-        String expandedName = Util.replaceMacro(name, build.getEnvironment(listener));
-        String pattern = Util.replaceMacro(packagesPattern, build.getEnvironment(listener));
-        String exclusionPattern = Util.replaceMacro(packagesExclusionPattern, build.getEnvironment(listener));
-        String expandedPublishPath = Util.replaceMacro(publishPath, build.getEnvironment(listener));
-        
-        listener.getLogger().format("Starting %s publication%n", expandedName);
+        listener.getLogger().format("Starting %s publication%n", name);
         FilePath workspaceRoot = getWorkspace(build);
         NugetGlobalConfiguration configuration = GlobalConfiguration.all().get(NugetGlobalConfiguration.class);
         NugetPublication publication = NugetPublication.get(nugetPublicationName);
-        NugetPublisherCallable callable = new NugetPublisherCallable(pattern, exclusionPattern, listener, configuration, expandedPublishPath, publication);
+
+        String pattern = Util.replaceMacro(packagesPattern, build.getEnvironment(listener));
+        String exclusionPattern = Util.replaceMacro(packagesExclusionPattern, build.getEnvironment(listener));
+        NugetPublisherCallable callable = new NugetPublisherCallable(pattern, exclusionPattern, listener, configuration, publication);
         List<PublicationResult> results = workspaceRoot.act(callable);
         if (results.size() > 0) {
-            build.addAction(new NugetPublisherRunAction(expandedName, results));
+            build.addAction(new NugetPublisherRunAction(name, results));
         }
-        listener.getLogger().format("Ended %s publication%n", expandedName);
+        listener.getLogger().format("Ended %s publication%n", name);
         checkErrors(results);
         return true;
     }
@@ -92,10 +85,6 @@ public class NugetPublisher extends Recorder {
 
     public String getPackagesPattern() {
         return packagesPattern;
-    }
-
-    public String getPublishPath() {
-        return publishPath;
     }
 
     public String getPackagesExclusionPattern() {
@@ -138,10 +127,6 @@ public class NugetPublisher extends Recorder {
 
         public FormValidation doCheckNugetPublicationName(@QueryParameter String value) {
             return Validations.mandatory(value);
-        }
-        
-        public FormValidation doCheckPublishPath(@QueryParameter String value) {
-            return Validations.urlPath(value);
         }
     }
 }
