@@ -1,12 +1,11 @@
-Nuget plugin
-====================
+# Nuget plugin
 
 [![Jenkins Plugin](https://img.shields.io/jenkins/plugin/v/nuget.svg)](https://plugins.jenkins.io/nuget)
 [![Jenkins Plugin Installs](https://img.shields.io/jenkins/plugin/i/nuget.svg?color=blue)](https://plugins.jenkins.io/nuget)
 
 ## About this plugin
 
-The Claim plugin is meant to integrated Nuget into Jenkins.
+The Nuget plugin integrates the [Microsoft Nuget code sharing system](https://docs.microsoft.com/en-us/nuget/what-is-nuget) into Jenkins.
 
 Supported features
 
