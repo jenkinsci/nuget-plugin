@@ -9,31 +9,19 @@
   </parent>
 
   <artifactId>nuget</artifactId>
-  <version>1.1-SNAPSHOT</version>
+  <version>${revision}${changelist}</version>
   <packaging>hpi</packaging>
   <name>Jenkins Nuget Plugin</name>
   <description>NuGet package updates trigger Jenkins builds</description>
   <url>https://github.com/jenkinsci/nuget-plugin</url>
 
-  <properties>
-    <java.level>7</java.level>
-    <jenkins-test-harness.version>2.6</jenkins-test-harness.version>
-    <jenkins.version>1.625.3</jenkins.version>
-    <xtrigger-lib.version>0.33</xtrigger-lib.version>
-  </properties>
 
-  <licenses>
-    <license>
-      <name>MIT License</name>
-      <url>http://opensource.org/licenses/MIT</url>
-    </license>
-  </licenses>
 
   <scm>
+    <url>https://github.com/jenkinsci/nuget-plugin</url>
     <connection>scm:git:git://github.com/jenkinsci/nuget-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:jenkinsci/nuget-plugin.git</developerConnection>
-    <url>https://github.com/jenkinsci/nuget-plugin</url>
-    <tag>HEAD</tag>
+    <tag>${scmTag}</tag>
   </scm>
   
   <developers>
@@ -49,6 +37,26 @@
     </developer>
   </developers>
 
+  <properties>
+    <revision>1.1</revision>
+    <changelist>-SNAPSHOT</changelist>
+    <jenkins.version>2.204.6</jenkins.version>
+    <java.level>8</java.level>
+    <checkstyle.version>3.1.1</checkstyle.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.jenkins.tools.bom</groupId>
+        <artifactId>bom-2.204.x</artifactId>
+        <version>18</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <repositories>
     <repository>
       <id>repo.jenkins-ci.org</id>
@@ -63,11 +71,18 @@
     </pluginRepository>
   </pluginRepositories>
 
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>https://opensource.org/licenses/MIT</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
   <dependencies>
     <dependency>
       <groupId>org.jenkins-ci.lib</groupId>
       <artifactId>xtrigger-lib</artifactId>
-      <version>${xtrigger-lib.version}</version>
+      <version>0.33</version>
     </dependency>
   </dependencies>
 </project>
