@@ -10,6 +10,7 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 import hudson.util.FormValidation;
+import hudson.util.ListBoxModel;
 import jenkins.model.GlobalConfiguration;
 import org.jenkinsci.plugins.nuget.Messages;
 import org.jenkinsci.plugins.nuget.NugetGlobalConfiguration;
@@ -36,15 +37,17 @@ public class NugetPublisher extends Recorder {
     protected String nugetPublicationName;
     protected String packagesExclusionPattern;
     protected boolean doNotFailIfNoPackagesArePublished;
+    protected String nugetVerbosity;
 
     @DataBoundConstructor
-    public NugetPublisher(String name, String packagesPattern, String publishPath, String nugetPublicationName, String packagesExclusionPattern, boolean doNotFailIfNoPackagesArePublished) {
+    public NugetPublisher(String name, String packagesPattern, String publishPath, String nugetPublicationName, String packagesExclusionPattern, boolean doNotFailIfNoPackagesArePublished, String nugetVerbosity) {
         this.name = name;
         this.packagesPattern = packagesPattern;
         this.publishPath = StringUtils.trim(publishPath);
         this.nugetPublicationName = nugetPublicationName;
         this.packagesExclusionPattern = packagesExclusionPattern;
         this.doNotFailIfNoPackagesArePublished = doNotFailIfNoPackagesArePublished;
+        this.nugetVerbosity = nugetVerbosity;
     }
 
     @Override
@@ -64,13 +67,16 @@ public class NugetPublisher extends Recorder {
         listener.getLogger().format("Starting %s publication%n", expandedName);
         NugetGlobalConfiguration configuration = GlobalConfiguration.all().get(NugetGlobalConfiguration.class);
         NugetPublication publication = NugetPublication.get(nugetPublicationName);
-        NugetPublisherCallable callable = new NugetPublisherCallable(pattern, exclusionPattern, listener, configuration, expandedPublishPath, publication);
+        NugetPublisherCallable callable = new NugetPublisherCallable(pattern, exclusionPattern, listener, configuration, expandedPublishPath, publication, nugetVerbosity);
 
         FilePath filesRoot = this.getFilesRoot(build);
 
         List<PublicationResult> results = filesRoot.act(callable);
         if (results.size() > 0) {
             build.addAction(new NugetPublisherRunAction(expandedName, results));
+        }
+        else {
+            listener.getLogger().println("No packages were found to publish.");
         }
         listener.getLogger().format("Ended %s publication%n", expandedName);
         checkErrors(results);
@@ -117,6 +123,10 @@ public class NugetPublisher extends Recorder {
         return nugetPublicationName;
     }
 
+    public String getNugetVerbosity() {
+        return nugetVerbosity;
+    }
+
     public boolean isDoNotFailIfNoPackagesArePublished() {
         return doNotFailIfNoPackagesArePublished;
     }
@@ -124,6 +134,11 @@ public class NugetPublisher extends Recorder {
     @Extension
     public static final class NugetPublisherDescriptor extends BuildStepDescriptor<Publisher> {
 
+        private static final String[] NUGET_VERBOSITIES = {
+            "Normal",
+            "Quiet",
+            "Detailed"
+        };
         private static final String PROMOTION_JOB_TYPE = "hudson.plugins.promoted_builds.PromotionProcess";
 
         public NugetPublisherDescriptor() {
@@ -134,6 +149,16 @@ public class NugetPublisher extends Recorder {
         @Override
         public boolean isApplicable(Class<? extends AbstractProject> type) {
             return !PROMOTION_JOB_TYPE.equals(type.getCanonicalName());
+        }
+
+        public ListBoxModel doFillNugetVerbosityItems() {
+            ListBoxModel items = new ListBoxModel();
+
+            for (String choice : NUGET_VERBOSITIES) {
+                items.add(choice);
+            }
+
+            return items;
         }
 
         @Override

@@ -15,8 +15,8 @@ public class NugetPublishCommand extends NugetCommandBase {
     private NugetPublication publication;
     private String publishPath;
 
-    public NugetPublishCommand(TaskListener listener, NugetGlobalConfiguration configuration, FilePath workDir, FilePath packageFile, String publishPath, NugetPublication publication) {
-        super(listener, configuration, workDir);
+    public NugetPublishCommand(TaskListener listener, NugetGlobalConfiguration configuration, FilePath workDir, FilePath packageFile, String publishPath, NugetPublication publication, String nugetVerbosity) {
+        super(listener, configuration, workDir, nugetVerbosity);
         this.packageFile = packageFile;
         this.publication = publication;
         this.publishPath = publishPath;

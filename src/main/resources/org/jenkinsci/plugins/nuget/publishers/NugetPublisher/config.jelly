@@ -43,4 +43,7 @@
     <f:entry title="${%DoNotFailIfNoPackagesArePublished}" field="doNotFailIfNoPackagesArePublished">
         <f:checkbox value="${instance.doNotFailIfNoPackagesArePublished}"/>
     </f:entry>
+    <f:entry title="${%NugetVerbosity}" field="nugetVerbosity">
+        <f:select default="Normal" />
+    </f:entry>
 </j:jelly>

@@ -27,14 +27,16 @@ class NugetPublisherCallable extends MasterToSlaveFileCallable<List<PublicationR
     private final BuildListener listener;
     private final NugetGlobalConfiguration configuration;
     private final NugetPublication publication;
+    private final String nugetVerbosity;
 
-    NugetPublisherCallable(String packagesPattern, String packagesExclusionPattern, BuildListener listener, NugetGlobalConfiguration configuration, String publishPath, NugetPublication publication) {
+    NugetPublisherCallable(String packagesPattern, String packagesExclusionPattern, BuildListener listener, NugetGlobalConfiguration configuration, String publishPath, NugetPublication publication, String nugetVerbosity) {
         this.packagesPattern = packagesPattern;
         this.publishPath = publishPath;
         this.packagesExclusionPattern = packagesExclusionPattern;
         this.listener = listener;
         this.configuration = configuration;
         this.publication = publication;
+        this.nugetVerbosity = nugetVerbosity;
     }
 
     @Override
@@ -49,7 +51,8 @@ class NugetPublisherCallable extends MasterToSlaveFileCallable<List<PublicationR
                     new FilePath(file),
                     new FilePath(packageFile),
                     publishPath,
-                    publication);
+                    publication,
+                    nugetVerbosity);
             boolean success = publishCommand.execute();
             results.add(new PublicationResult(packageFile.getName(), success));
         }

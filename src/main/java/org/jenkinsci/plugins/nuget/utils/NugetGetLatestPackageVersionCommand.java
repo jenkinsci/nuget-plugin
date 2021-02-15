@@ -23,7 +23,7 @@ class NugetGetLatestPackageVersionCommand extends NugetCommandBase {
     private String version;
 
     NugetGetLatestPackageVersionCommand(TriggerLog log, NugetGlobalConfiguration configuration, FilePath workDir, String packageName, boolean checkPrerelease) {
-        super(log.getListener(), configuration, workDir);
+        super(log.getListener(), configuration, workDir, null);
         this.log = log;
         this.packageName = packageName;
         this.checkPrerelease = checkPrerelease;
