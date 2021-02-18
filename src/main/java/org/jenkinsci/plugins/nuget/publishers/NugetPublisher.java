@@ -15,6 +15,7 @@ import jenkins.model.GlobalConfiguration;
 import org.jenkinsci.plugins.nuget.Messages;
 import org.jenkinsci.plugins.nuget.NugetGlobalConfiguration;
 import org.jenkinsci.plugins.nuget.NugetPublication;
+import org.jenkinsci.plugins.nuget.utils.NugetUtils;
 import org.jenkinsci.plugins.nuget.utils.Validations;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
@@ -134,11 +135,6 @@ public class NugetPublisher extends Recorder {
     @Extension
     public static final class NugetPublisherDescriptor extends BuildStepDescriptor<Publisher> {
 
-        private static final String[] NUGET_VERBOSITIES = {
-            "Normal",
-            "Quiet",
-            "Detailed"
-        };
         private static final String PROMOTION_JOB_TYPE = "hudson.plugins.promoted_builds.PromotionProcess";
 
         public NugetPublisherDescriptor() {
@@ -152,13 +148,7 @@ public class NugetPublisher extends Recorder {
         }
 
         public ListBoxModel doFillNugetVerbosityItems() {
-            ListBoxModel items = new ListBoxModel();
-
-            for (String choice : NUGET_VERBOSITIES) {
-                items.add(choice);
-            }
-
-            return items;
+            return NugetUtils.createVerbositiesListBoxModel();
         }
 
         @Override
