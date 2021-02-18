@@ -1,0 +1,15 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+    <f:entry title="${%NuspecPattern}" field="nuspecPattern">
+        <f:textbox value="${instance.nuspecPattern}" default="/**/*.nuspec"/>
+    </f:entry>
+    <f:entry title="${%OutputDirectory}" field="outputDirectory">
+        <f:textbox value="${instance.outputDirectory}" default="output"/>
+    </f:entry>
+    <f:entry title="${%NugetVerbosity}" field="nugetVerbosity">
+        <f:select default="Normal" />
+    </f:entry>
+    <f:entry title="${%FailIfNoPackagesAreCreated}" field="failIfNoPackagesAreCreated">
+        <f:checkbox value="${instance.failIfNoPackagesAreCreated}" default="true"/>
+    </f:entry>
+</j:jelly>
