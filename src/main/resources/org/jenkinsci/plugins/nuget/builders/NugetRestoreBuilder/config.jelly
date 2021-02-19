@@ -1,0 +1,22 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+    <j:set var="nugetRepositories" value="${descriptor.nugetRepositories}"/>
+    <f:entry title="${%ProjectPath}" field="projectPath">
+        <f:textbox value="${instance.projectPath}"/>
+    </f:entry>
+    <j:choose>
+        <j:when test="${empty(nugetRepositories)}">
+            <f:entry title="${%NugetRepositoryName}">
+                <div class="error">${%NugetRepository.error(rootURL)}</div>
+            </f:entry>
+        </j:when>
+        <j:otherwise>
+            <f:entry title="${%NugetRepositoryName}" field="nugetRepositoryName">
+                <f:select />
+            </f:entry>
+        </j:otherwise>
+    </j:choose>
+    <f:entry title="${%NugetVerbosity}" field="nugetVerbosity">
+        <f:select default="Normal" />
+    </f:entry>
+</j:jelly>

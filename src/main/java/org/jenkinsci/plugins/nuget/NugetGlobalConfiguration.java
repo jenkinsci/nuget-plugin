@@ -13,11 +13,13 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
  * @author Arnaud TAMAILLON
+ * @author Dennis Lundberg
  */
 @Extension
 public class NugetGlobalConfiguration extends GlobalConfiguration implements Serializable {
@@ -25,6 +27,8 @@ public class NugetGlobalConfiguration extends GlobalConfiguration implements Ser
     private String nugetExe;
     @CopyOnWrite
     private volatile List<NugetPublication> publications = Collections.EMPTY_LIST;
+    @CopyOnWrite
+    private volatile List<NugetRepository> nugetRepositories = new ArrayList<>();
 
     public NugetGlobalConfiguration() {
         super();
@@ -40,10 +44,15 @@ public class NugetGlobalConfiguration extends GlobalConfiguration implements Ser
         return publications;
     }
 
+    public List<NugetRepository> getNugetRepositories() {
+        return nugetRepositories;
+    }
+
     @Override
     public boolean configure(StaplerRequest req, JSONObject json) {
         nugetExe = json.getString("nugetExe");
         publications = req.bindJSONToList(NugetPublication.class, json.get("publication"));
+        nugetRepositories = req.bindJSONToList(NugetRepository.class, json.get("nugetRepository"));
         save();
         return true;
     }
