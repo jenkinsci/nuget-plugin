@@ -12,12 +12,15 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import jenkins.model.GlobalConfiguration;
 import jenkins.tasks.SimpleBuildStep;
 import org.jenkinsci.plugins.nuget.NugetGlobalConfiguration;
 import org.jenkinsci.plugins.nuget.utils.NugetUtils;
+import org.jenkinsci.plugins.nuget.utils.Validations;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.QueryParameter;
 
 /**
  * This is a build step that performs 'nuget pack' using one or more configured
@@ -96,6 +99,10 @@ public class NugetPackBuilder extends Builder implements SimpleBuildStep {
 
     @Extension
     public static class DescriptorImpl extends BuildStepDescriptor<Builder> {
+        public FormValidation doCheckNuspecPattern(@QueryParameter String value) {
+            return Validations.mandatory(value);
+        }
+
         public ListBoxModel doFillNugetVerbosityItems() {
             return NugetUtils.createVerbositiesListBoxModel();
         }
