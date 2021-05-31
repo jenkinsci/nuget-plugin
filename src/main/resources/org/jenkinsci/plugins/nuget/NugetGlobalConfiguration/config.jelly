@@ -29,5 +29,27 @@
         </f:repeatable>
       </div>
     </f:entry>
+
+    <f:entry title="${%NugetRepositories}" field="nugetRepositories">
+      <div>
+        <f:repeatable var="nugetRepository" items="${instance.nugetRepositories}" add="${%AddRepository}">
+          <table width="100%">
+            <f:entry title="${%RepositoryName}">
+              <f:textbox name="name" value="${nugetRepository.getName()}" checkUrl="'${rootURL}/descriptor/NugetGlobalConfiguration/checkMandatory?value='+escape(this.value)"/>
+            </f:entry>
+
+            <f:entry title="${%RepositoryUrl}">
+              <f:textbox name="url" value="${nugetRepository.getUrl()}" checkUrl="'${rootURL}/descriptor/NugetGlobalConfiguration/checkMandatory?value='+escape(this.value)"/>
+            </f:entry>
+
+            <f:entry title="">
+              <div align="right">
+                <f:repeatableDeleteButton value="${%DeleteRepository}"/>
+              </div>
+            </f:entry>
+          </table>
+        </f:repeatable>
+      </div>
+    </f:entry>
   </f:section>
 </j:jelly>

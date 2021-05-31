@@ -15,17 +15,20 @@ abstract class NugetCommandBase {
 
     static final String NON_INTERACTIVE = "-NonInteractive";
     static final String PRE_RELEASE = "-Prerelease";
+    static final String VERBOSITY = "-Verbosity";
 
     int retryCount = 1;
     protected TaskListener listener;
     protected NugetGlobalConfiguration configuration;
     private FilePath workDir;
     protected boolean failed;
+    protected String nugetVerbosity;
 
-    NugetCommandBase(TaskListener listener, NugetGlobalConfiguration configuration, FilePath workDir) {
+    NugetCommandBase(TaskListener listener, NugetGlobalConfiguration configuration, FilePath workDir, String nugetVerbosity) {
         this.listener = listener;
         this.configuration = configuration;
         this.workDir = workDir;
+        this.nugetVerbosity = nugetVerbosity;
     }
 
     public boolean execute() throws IOException {
@@ -50,6 +53,11 @@ abstract class NugetCommandBase {
         Launcher.LocalLauncher launcher = new Launcher.LocalLauncher(listener);
         ArgumentListBuilder builder = new ArgumentListBuilder(getNugetExe());
         enrichArguments(builder);
+        if (nugetVerbosity != null && !nugetVerbosity.equals("")) {
+            builder.add(VERBOSITY);
+            // Possible values are normal (default), quiet, detailed
+            builder.add(nugetVerbosity);
+        }
         Launcher.ProcStarter starter = launcher
                 .launch()
                 .pwd(workDir)

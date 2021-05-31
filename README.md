@@ -10,7 +10,9 @@ The Nuget plugin integrates the [Microsoft Nuget code sharing system](https://do
 Supported features
 
 * **trigger jobs** when a NuGet dependency is updated
+* **create NuGet packages** using nuspec files (@since version 1.1)
 * **publish packages** to NuGet repositories
+* **restore NuGet packages** from a NuGet repository (@since version 1.1)
 
 ## Usage
 
